@@ -8,39 +8,20 @@ public class Main {
         Environnement env = new Environnement(42, 54);
 
         // Create obstacles
-        env.definir_obstacles(25, 30);
-        env.definir_obstacles(25, 1);
-        env.definir_obstacles(25, 20);
-        env.definir_obstacles(24, 21);
-        env.definir_obstacles(25, 30);
-        env.definir_obstacles(25, 1);
-        env.definir_obstacles(23, 20);
-        env.definir_obstacles(25, 31);
-        env.definir_obstacles(23, 10);
-        env.definir_obstacles(25, 1);
-        env.definir_obstacles(23, 20);
-        env.definir_obstacles(25, 11);
-        env.definir_obstacles(25, 34);
-        env.definir_obstacles(25, 1);
-        env.definir_obstacles(23, 20);
-        env.definir_obstacles(23, 21);
-        env.definir_obstacles(26, 30);
-        env.definir_obstacles(25, 1);
-        env.definir_obstacles(25, 20);
-        env.definir_obstacles(25, 21);
+        env.generateRandomObstacles("medium");
 
-        // Create drones
+        // Create drone
         position dronePos = new position(20, 20, 0);  // Drone within grid bounds
         drone myDrone = new drone(101, 80.5, dronePos);
         env.ajout_drone(myDrone);
 
-        // Create targets
+        // Create target
         position targetPos = new position(30, 14, 0);  // Target within grid bounds
-        env.ajout_dest(targetPos);  // Target within grid bounds
+        env.ajout_dest(targetPos);
 
         // Create and display GUI
         JFrame frame = new JFrame("Drone Environment");
-        frame.setSize(80, 80);
+        frame.setSize(1000, 800);  // Adjusted size for visibility
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         EnvironmentPanel panel = new EnvironmentPanel(env);
@@ -49,8 +30,9 @@ public class Main {
 
         // Start drone navigation in a separate thread
         new Thread(() -> {
-            myDrone.navigateTo(targetPos, env.getCarte(),panel);
-            SwingUtilities.invokeLater(() -> frame.repaint());
+            myDrone.navigateTo(targetPos, env.getCarte(), panel);
+            System.out.println("Drone position : " + myDrone.getposition() );
+
         }).start();
     }
 }
