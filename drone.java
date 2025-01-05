@@ -3,9 +3,9 @@ import java.util.*;
 
 
 public class drone {
-    private int numSerie;
-    public double niveauBatterie;
-    private Position positionDrone;
+    protected int numSerie;
+    protected double niveauBatterie;
+    protected Position positionDrone;
   
 
     //constucteur
@@ -21,41 +21,7 @@ public class drone {
         this.positionDrone = newPosition;
     }
 
-    /*public void navigateTo(position target, boolean[][] carte, EnvironmentPanel panel) {
-        while (!positionDrone.Equel_po(target)) {
-            int dx = (int) Math.signum(target.getX() - position_drone.getX());
-            int dy = (int) Math.signum(target.getY() - position_drone.getY());
-            int nextX = (int) position_drone.getX() + dx;
-            int nextY = (int) position_drone.getY() + dy;
-    
-            // Check for obstacles
-            if (carte[nextX][nextY]) {
-                // Adjust movement to avoid obstacle (basic detour)
-                if (!carte[nextX][(int) position_drone.getY()]) {
-                    nextY = (int) position_drone.getY(); // Move horizontally only
-                } else if (!carte[(int) position_drone.getX()][nextY]) {
-                    nextX = (int) position_drone.getX(); // Move vertically only
-                }
-            }
-            panel.repaint();
-            // Update position
-            position_drone.setX(nextX);
-            position_drone.SetY(nextY);
-    
-            // Add a delay to visualize movement
-            try {
-                Thread.sleep(200); // 200 ms delay
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    
-
-
-}
-*/
+  
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -91,31 +57,31 @@ public class drone {
     }
 
 
-    // méthode findPath
-    public List<Position> findPath(Position start, Position target, boolean[][] carte) {
+        // méthode findPath
+        public List<Position> findPath(Position start, Position target, boolean[][] carte) {
 
-        PriorityQueue<Node> openList = new PriorityQueue<>(Comparator.comparingDouble(Node::getF));
-        Set<Position> closedSet = new HashSet<>();
-        openList.add(new Node(start, null, 0, start.distanceA(target)));
+            PriorityQueue<Node> openList = new PriorityQueue<>(Comparator.comparingDouble(Node::getF));
+            Set<Position> closedSet = new HashSet<>();
+            openList.add(new Node(start, null, 0, start.distanceA(target)));
 
-        while (!openList.isEmpty()) {
-            Node current = openList.poll();
-            if (current.getPosition().equalPosition(target)) {
-                return reconstructPath(current);
+            while (!openList.isEmpty()) {
+                Node current = openList.poll();
+                if (current.getPosition().equalPosition(target)) {
+                    return reconstructPath(current);
+                }
+
+                closedSet.add(current.getPosition());
+
+                for (Position neighbor : getNeighbors(current.getPosition(), carte)) {
+                    if (closedSet.contains(neighbor)) continue;
+
+                    double tentativeG = current.getG() + current.getPosition().distanceA(neighbor);
+                    Node neighborNode = new Node(neighbor, current, tentativeG, tentativeG + neighbor.distanceA(target));
+                    openList.add(neighborNode);
+                }
             }
-
-            closedSet.add(current.getPosition());
-
-            for (Position neighbor : getNeighbors(current.getPosition(), carte)) {
-                if (closedSet.contains(neighbor)) continue;
-
-                double tentativeG = current.getG() + current.getPosition().distanceA(neighbor);
-                Node neighborNode = new Node(neighbor, current, tentativeG, tentativeG + neighbor.distanceA(target));
-                openList.add(neighborNode);
-            }
+                    return new ArrayList<>();
         }
-                return new ArrayList<>();
-    }
 
         private List<Position> reconstructPath(Node node) {
             List<Position> path = new ArrayList<>();
@@ -145,11 +111,14 @@ public class drone {
 
     @Override
     public String toString(){
+         
+         System.out.println("Drone definie sous: " + this.numSerie + "  ; sa position : " 
+         + "( " + this.positionDrone.getX() + "," + this.positionDrone.getY() + " )");
          return "Drone definie sous: " + this.numSerie + ", son niveau de batterie : " + this.niveauBatterie + ", se trouve actuellement à : " 
-         + this.positionDrone ;
+         + "( " + this.positionDrone.getX() + "," + this.positionDrone.getY() + " )" ;
     }
 
-    public Position getPosition(){return this.positionDrone;}
+    protected Position getPosition(){return this.positionDrone;}
 }
 
 
