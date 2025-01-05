@@ -11,7 +11,7 @@ public class TraqueurTrajectoire {
         trajectorePositions.add(new Position(pos.getX(), pos.getY(), 0));
     }
     
-    public List<Position> getTrajectore() {
+    public List<Position> getTrajectoire() {
         return trajectorePositions;
     }
 }

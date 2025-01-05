@@ -6,7 +6,7 @@ public class drone {
     protected int numSerie;
     protected double niveauBatterie;
     protected Position positionDrone;
-  
+    protected static Position positionDepart; // Nouvelle variable pour stocker le point de départ
 
     //constucteur
     public  drone (int numSerie,double niveauBatterie, Position positionDrone ){

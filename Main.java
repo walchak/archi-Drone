@@ -84,19 +84,19 @@ public class Main {
         // Démarrage des drones dans des threads séparés
         Thread thread1 = new Thread(() -> {
             System.out.println("\n=== Démarrage navigation Drone 1 ===");
-            drone1.naviguerVersDestination(targetPos1, env, panel,drone1);
+            drone1.naviguerLivraisonEtRetour(targetPos1, env, panel,drone1);
             System.out.println("Drone 1 position finale : " + drone1.getPosition());
         });
 
         Thread thread2 = new Thread(() -> {
             System.out.println("\n=== Démarrage navigation Drone 2 ===");
-            drone2.naviguerVersDestination(targetPos2, env, panel,drone2);
+            drone2.naviguerLivraisonEtRetour(targetPos2, env, panel,drone2);
             System.out.println("Drone 2 position finale : " + drone2.getPosition());
         });
 
         Thread thread3 = new Thread(() -> {
             System.out.println("\n=== Démarrage navigation Drone 3 ===");
-            drone3.naviguerVersDestination(targetPos3, env, panel,drone3);
+            drone3.naviguerLivraisonEtRetour(targetPos3, env, panel,drone3);
             System.out.println("Drone 3 position finale : " + drone3.getPosition());
         });
 

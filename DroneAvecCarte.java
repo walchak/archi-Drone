@@ -1,5 +1,4 @@
 
-
 import java.util.*;
 
 public class DroneAvecCarte extends drone {
@@ -31,6 +30,7 @@ public class DroneAvecCarte extends drone {
     this.memoireObstacles = new HashSet<>();
     this.positionsVisitees = new HashMap<>();
     this.tracker = new TraqueurTrajectoire();
+    this.positionDepart = new Position(positionDrone.getX(), positionDrone.getY(), 0);
 }
 
     private List<Position> detecterObstacles(Environnement env) {
@@ -59,7 +59,26 @@ public class DroneAvecCarte extends drone {
             return nouveauxObstacles;
         }
 
-    public void naviguerVersDestination(Position dest, Environnement env, EnvironmentPanel panel,drone d) {
+
+    public void naviguerLivraisonEtRetour(Position dest, Environnement env, EnvironmentPanel panel, drone d) {
+            // Navigation vers la destination
+            naviguerVersDestination(dest, env, panel, d, "LIVRAISON");
+        
+        
+            // Pause de 2 secondes
+            System.out.println("\n🕒 Pause de 2 secondes à la destination...");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
+            // Retour au point de départ ()
+            System.out.println("\n🏠 Retour au point de départ...");
+            parcourirTrajectoireEnArriere(env,panel);
+        
+    }
+    public void naviguerVersDestination(Position dest, Environnement env, EnvironmentPanel panel,drone d, String phased) {
         // Reset des positions visitées pour chaque nouvelle navigation
         positionsVisitees.clear();
         boolean estBloque = false;
@@ -136,6 +155,32 @@ public class DroneAvecCarte extends drone {
         }
      } 
     }
+    public void parcourirTrajectoireEnArriere(Environnement env, EnvironmentPanel panel) {
+    if (tracker != null && tracker.getTrajectoire() != null) {
+        List<Position> trajectoirePositions = tracker.getTrajectoire();
+        
+        for (int i = trajectoirePositions.size() - 1; i >= 0; i--) {
+            Position position = trajectoirePositions.get(i);
+
+            // Vérifiez si la position est occupée dans l'environnement
+            if (!env.isPositionOccupied((int) position.getX(), (int) position.getY())) {
+                // Déplacez le drone à cette position
+                positionDrone.setX(position.getX());
+                positionDrone.SetY(position.getY());
+                panel.repaint();
+
+                // Pause pour la visualisation
+                try {
+                    Thread.sleep(200); // Pause de 200ms
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    } else {
+        System.out.println("Traqueur ou trajectoire non initialisé !");
+    }
+}
 
     public Position calculerProchainDeplacement(Position dest, Environnement env) {
         int currentX = (int)positionDrone.getX();
@@ -240,6 +285,6 @@ public class DroneAvecCarte extends drone {
     }
 
     public List<Position> getTrajectoire() {
-    return tracker.getTrajectore();
+        return tracker.getTrajectoire();
     }
  }
