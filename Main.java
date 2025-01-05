@@ -10,8 +10,8 @@ public class Main {
     
         // Création des 3 drones avec des positions différentes
         Position dronePos1 = new Position(5, 5, 0);
-        Position dronePos2 = new Position(20, 20, 0);
-        Position dronePos3 = new Position(18, 25, 0);
+        Position dronePos2 = new Position(5, 20, 0);
+        Position dronePos3 = new Position(5, 25, 0);
 
         DroneAvecCarte drone1 = new DroneAvecCarte(1,100.0, dronePos1, 3);
         DroneAvecCarte drone2 = new DroneAvecCarte(2,100.0, dronePos2, 3);
@@ -24,7 +24,7 @@ public class Main {
 
         // Création des positions cibles pour chaque drone
         
-        Position targetPos1 = new Position(30, 34, 0);
+        Position targetPos1 = new Position(30, 10, 0);
         Position targetPos2 = new Position(28, 28, 0);
         Position targetPos3 = new Position(35, 25, 0);
 
@@ -48,19 +48,19 @@ public class Main {
         Thread thread1 = new Thread(() -> {
             System.out.println("\n=== Démarrage navigation Drone 1 ===");
             drone1.naviguerLivraisonEtRetour(targetPos1, env, panel,drone1);
-            System.out.println("Drone 1 position finale : " + drone1.getPosition());
+            
         });
 
         Thread thread2 = new Thread(() -> {
             System.out.println("\n=== Démarrage navigation Drone 2 ===");
             drone2.naviguerLivraisonEtRetour(targetPos2, env, panel,drone2);
-            System.out.println("Drone 2 position finale : " + drone2.getPosition());
+            
         });
 
         Thread thread3 = new Thread(() -> {
             System.out.println("\n=== Démarrage navigation Drone 3 ===");
             drone3.naviguerLivraisonEtRetour(targetPos3, env, panel,drone3);
-            System.out.println("Drone 3 position finale : " + drone3.getPosition());
+           
         });
 
         // Démarrage séquentiel des threads avec délai

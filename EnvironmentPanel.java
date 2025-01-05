@@ -9,7 +9,7 @@ class EnvironmentPanel extends JPanel {
     private static final Color[] TRAJECTORY_COLORS = {
         new Color(255, 255, 0, 100),    // Jaune semi-transparent
         new Color(255, 200, 0, 100),    // Orange semi-transparent
-        new Color(255, 192, 203, 100)   // Rose semi-transparent
+        new Color(255, 192, 80, 100)   // Rose semi-transparent
     };
     
     public EnvironmentPanel(Environnement env) {

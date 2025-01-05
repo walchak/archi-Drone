@@ -67,6 +67,7 @@ public class DroneAvecCarte extends drone {
         
             // Pause de 2 secondes
             System.out.println("\n🕒 Pause de 2 secondes à la destination...");
+             System.out.println("\n +++++++++++++++ commande livrée ++++++++++++++ ");
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -150,7 +151,7 @@ public class DroneAvecCarte extends drone {
          if (positionDrone.equalPosition(dest)) {
             System.out.println("\n✅ SUCCÈS: Destination atteinte en " + etape + " pas!");
             System.out.println("📍  position finale : " + "( " + this.positionDrone.getX() + "," + this.positionDrone.getY() + " )");
-            System.out.println("\n=== Fin de la navigation du drone " + this.numSerie +  "===" + "; commande livrée");
+            System.out.println("\n=== Fin de la navigation du drone " + this.numSerie +  "===" );
             
         }
      } 

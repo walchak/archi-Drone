@@ -57,58 +57,57 @@ public class Environnement {
             int x = rand.nextInt(width);
             int y = rand.nextInt(height);
 
-            // s'assurer que la position est unique et non occupée 
+            // s'assurer que la position est non occupée 
             String positionKey = x + "," + y;
-             if (!occupiedPositions.contains(positionKey)|| (!positionsDest.contains(new Position(x,y,0))))  {
-                
+             if (!occupiedPositions.contains(positionKey))  {
+
                 definirObstacles(x, y);  // Placer l'obstacle
                 occupiedPositions.add(positionKey);
             
             
              }
             
-    } }
-    
-    public void definirObstacles(int x, int y){
-        if(x>=0 && x<getWeight() && y>=0 && y<getHeight()){
-            carte[x][y] = true;
-            obstacles.add(new Position(x, y, 0));
+        } }
+        
+        public void definirObstacles(int x, int y){
+            if(x>=0 && x<getWeight() && y>=0 && y<getHeight()&&(!isPositionOccupied(x,y)&&(!positionsDest.contains(new Position(x,y,0))))){
+                carte[x][y] = true;
+                obstacles.add(new Position(x, y, 0));
+            }
+            else{
+                System.out.println("Obstacle hors de la carte");
+            }
         }
-        else{
-            System.out.println("Obstacle hors de la carte");
-        }
-    }
-    
-  
+        
+        // vérifier si la position est déja occupé par un drone ou obstacle
         public boolean isPositionOccupied(int x, int y) {
             for (drone d : drones) {
                 if ((int) d.getPosition().getX() == x && (int) d.getPosition().getY() == y) {
                     return true;
                 }
             }
-            
             return carte[x][y];
         }
 
 
-    public void ajoutDrone(drone D){
-        drones.add(D);
-    }
-   
-    public void ajoutDest(Position posFinale){
-        if((posFinale.getX()>=0 && posFinale.getX()<getWeight()) && (posFinale.getY()>=0 && posFinale.getY()<getHeight()))
-            {
-                positionsDest.add(posFinale);
-            }
-        else{
-            System.out.println("Destination hors de la carte");
+        public void ajoutDrone(drone D){
+            drones.add(D);
         }
-    }    
+    
+        public void ajoutDest(Position posFinale){
+            if((posFinale.getX()>=0 && posFinale.getX()<getWeight()) && (posFinale.getY()>=0 && posFinale.getY()<getHeight()))
+                {
+                    positionsDest.add(posFinale);
+                }
+            else{
+                System.out.println("Destination hors de la carte");
+            }
+        }    
 
-
-    public List<drone> getdrones(){return drones;}
-    public List<Position> getobstacles(){return obstacles;}
-    public List<Position> getdestination(){return positionsDest;}
+        //getters
+        public List<drone> getdrones(){return drones;}
+        public List<Position> getobstacles(){return obstacles;}
+        public List<Position> getdestination(){return positionsDest;}
 
 
  }
