@@ -59,7 +59,7 @@ public class Environnement {
 
             // s'assurer que la position est unique et non occupée 
             String positionKey = x + "," + y;
-            if (!occupiedPositions.contains(positionKey)) {
+            if (!occupiedPositions.contains(positionKey)|| (!positionsDest.contains(new Position(x,y,0)))) {
                 definirObstacles(x, y);  // Placer l'obstacle
                 occupiedPositions.add(positionKey);
             }
@@ -76,14 +76,7 @@ public class Environnement {
         }
     }
     
-    /*public void resetCarte() {
-        for (int i = 0; i < carte.length; i++) {
-            for (int j = 0; j < carte[0].length; j++) {
-                carte[i][j] = false;
-            }
-        }
-        obstacles.clear();
-    }*/
+  
         public boolean isPositionOccupied(int x, int y) {
             for (drone d : drones) {
                 if ((int) d.getPosition().getX() == x && (int) d.getPosition().getY() == y) {

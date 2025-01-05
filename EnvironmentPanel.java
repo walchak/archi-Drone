@@ -33,7 +33,7 @@ class EnvironmentPanel extends JPanel {
         }
 
 
-         // Dessiner les trajectoires en temps réel
+         // Peindre les trajectoires en temps réel avec les couleurs 
         int droneIndex = 0;
         for (drone d : env.getdrones()) {
             if (d instanceof DroneAvecCarte) {
