@@ -1,7 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
+
+
 class EnvironmentPanel extends JPanel {
     private Environnement env;
+
+    //pour visualiser les trajectoires des drones 
+    private static final Color[] TRAJECTORY_COLORS = {
+        new Color(255, 255, 0, 100),    // Jaune semi-transparent
+        new Color(255, 200, 0, 100),    // Orange semi-transparent
+        new Color(255, 192, 203, 100)   // Rose semi-transparent
+    };
+    
     public EnvironmentPanel(Environnement env) {
         this.env = env;
     }
@@ -21,6 +31,22 @@ class EnvironmentPanel extends JPanel {
                 }
             }
         }
+
+
+         // Dessiner les trajectoires en temps réel
+        int droneIndex = 0;
+        for (drone d : env.getdrones()) {
+            if (d instanceof DroneAvecCarte) {
+                DroneAvecCarte droneAvecCarte = (DroneAvecCarte) d;
+                g.setColor(TRAJECTORY_COLORS[droneIndex % TRAJECTORY_COLORS.length]);
+                
+                for (Position pos : droneAvecCarte.getTrajectoire()) {
+                    g.fillRect((int) pos.getX() * 20, (int) pos.getY() * 20, 20, 20);
+                }
+            }
+            droneIndex++;
+        }
+        
         // Draw drones
         g.setColor(Color.BLUE);
         for (drone d : env.getdrones()) {

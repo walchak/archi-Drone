@@ -47,7 +47,7 @@ public class Main {
     public static void main(String[] argvs) {
         // Création de l'environnement
         Environnement env = new Environnement(42, 54);
-        env.generateRandomObstacles("medium");
+        env.generateRandomObstacles("easy");
 
         // Création des 3 drones avec des positions différentes
         Position dronePos1 = new Position(5, 5, 0);

@@ -1,30 +1,12 @@
-/*public class DroneAvecCarte extends drone {
-    private String carteInterne;
 
-    public DroneAvecCarte(int var1, double var4, Position var2, String var3) {
-       super(var1, var4, var2); // j'ai corrigé l'erreur ici : maintenant les types et l'ordre correspondent au constructeur parent
-       this.carteInterne = var3;
-    }
- 
-    public void mettreAJourCarte(String var1) {
-       this.carteInterne = var1;
-    }
- 
-    public String toString() {
-       String var10000 = super.toString();
-       return var10000 + ", avec carte interne : " + this.carteInterne;
-    }
-
-
-
-
-}*/
 
 import java.util.*;
 
 public class DroneAvecCarte extends drone {
    
     private int rayonDetection;
+
+    private TraqueurTrajectoire tracker;
     
     
     // Mémoire des obstacles détectés
@@ -43,12 +25,13 @@ public class DroneAvecCarte extends drone {
 
 
     //constructeur
-    public DroneAvecCarte(int numSerie,double niveauBatterie, Position positionDrone , int rayonDetection) {
-        super(numSerie,niveauBatterie,positionDrone);
-        this.rayonDetection = rayonDetection;
-        this.memoireObstacles = new HashSet<>();
-        this.positionsVisitees = new HashMap<>();
-    }
+    public DroneAvecCarte(int numSerie, double niveauBatterie, Position positionDrone, int rayonDetection) {
+    super(numSerie, niveauBatterie, positionDrone);
+    this.rayonDetection = rayonDetection;
+    this.memoireObstacles = new HashSet<>();
+    this.positionsVisitees = new HashMap<>();
+    this.tracker = new TraqueurTrajectoire();
+}
 
     private List<Position> detecterObstacles(Environnement env) {
             List<Position> nouveauxObstacles = new ArrayList<>();
@@ -122,7 +105,14 @@ public class DroneAvecCarte extends drone {
                 positionDrone.SetY(nextPosition.getY());
                 //System.out.println("📍 Nouvelle position: " + positionDrone);
                 System.out.println("📏 Distance restante: " + positionDrone.distanceA(dest));
-         
+
+
+                if (!positionOccupee && !obstaclePresent) {
+                    positionDrone.setX(nextPosition.getX());
+                    positionDrone.SetY(nextPosition.getY());
+                    tracker.addPosition(new Position(nextPosition.getX(), nextPosition.getY(), 0));
+                    System.out.println("\uD83D\uDCCF Distance restante: " + positionDrone.distanceA(dest));
+                    
                 panel.repaint();
                 
                 try {
@@ -144,9 +134,10 @@ public class DroneAvecCarte extends drone {
             System.out.println("\n=== Fin de la navigation du drone " + this.numSerie +  "===" + "; commande livrée");
             
         }
+     } 
     }
 
-    private Position calculerProchainDeplacement(Position dest, Environnement env) {
+    public Position calculerProchainDeplacement(Position dest, Environnement env) {
         int currentX = (int)positionDrone.getX();
         int currentY = (int)positionDrone.getY();
         
@@ -165,18 +156,48 @@ public class DroneAvecCarte extends drone {
                 Position newPos = new Position(newX, newY, 0);
                 double distance = newPos.distanceA(dest);
 
-                if (memoireObstacles.contains(newPos)) {
-                    distance += 1000; // Pénalité pour les obstacles
-                } else if (!env.isPositionOccupied(newX, newY)) {
+                // Si la position est libre (pas d'obstacle ni de drone)
+                if (!memoireObstacles.contains(newPos) && !env.isPositionOccupied(newX, newY)) {
+                    // Calculer un score pour cette position
+                    double score = distance;
                     
-                    // Pénaliser les positions déjà visitées
+                    // Pénaliser les positions trop visitées
                     int visites = positionsVisitees.getOrDefault(newPos, 0);
-                    distance += visites * 2; // Pénalité pour chaque visite précédente
+                    score += visites * 5; // Augmentation de la pénalité pour les positions visitées
+                    
+                    // Favoriser les positions moins visitées quand le drone est potentiellement bloqué
+                    Position posActuelle = new Position(currentX, currentY, 0);
+                    if (positionsVisitees.getOrDefault(posActuelle, 0) >= LIMITE_BOUCLE - 1) {
+                        score -= (1.0 / (visites + 1)) * 10; // Bonus pour les positions moins visitées
+                    }
                     
                     possibleMoves.add(newPos);
-                    if (distance < bestDistance) {
-                        bestDistance = distance;
+                    if (score < bestDistance) {
+                        bestDistance = score;
                         bestPosition = newPos;
+                    }
+                }
+            }
+        }
+
+        // Si aucune position n'a été trouvée, chercher une position de repli
+        if (bestPosition == null) {
+            // Chercher la position accessible la moins visitée
+            int minVisites = Integer.MAX_VALUE;
+            for (int[] dir : DIRECTIONS) {
+                int newX = currentX + dir[0];
+                int newY = currentY + dir[1];
+                
+                if (newX >= 0 && newX < env.getWeight() && 
+                    newY >= 0 && newY < env.getHeight()) {
+                    
+                    Position newPos = new Position(newX, newY, 0);
+                    if (!env.isPositionOccupied(newX, newY)) {
+                        int visites = positionsVisitees.getOrDefault(newPos, 0);
+                        if (visites < minVisites) {
+                            minVisites = visites;
+                            bestPosition = newPos;
+                        }
                     }
                 }
             }
@@ -184,7 +205,6 @@ public class DroneAvecCarte extends drone {
 
         return bestPosition;
     }
-
     private boolean rechercheCheminAlternatif(Position dest, Environnement env) {
         // Essayer de s'éloigner temporairement de la destination
         int currentX = (int)positionDrone.getX();
@@ -218,4 +238,8 @@ public class DroneAvecCarte extends drone {
     public Set<Position> getObstaclesConnus() {
         return new HashSet<>(memoireObstacles);
     }
-}
+
+    public List<Position> getTrajectoire() {
+    return tracker.getTrajectore();
+    }
+ }
