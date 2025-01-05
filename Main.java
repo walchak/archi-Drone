@@ -47,7 +47,6 @@ public class Main {
     public static void main(String[] argvs) {
         // Création de l'environnement
         Environnement env = new Environnement(42, 54);
-        env.generateRandomObstacles("easy");
 
         // Création des 3 drones avec des positions différentes
         Position dronePos1 = new Position(5, 5, 0);
@@ -72,6 +71,9 @@ public class Main {
         env.ajoutDest(targetPos1);
         env.ajoutDest(targetPos2);
         env.ajoutDest(targetPos3);
+
+        
+        env.generateRandomObstacles("easy");
 
         // Création et affichage de l'interface graphique
         JFrame frame = new JFrame("Simulation Multi-Drones");
