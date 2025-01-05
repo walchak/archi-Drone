@@ -59,14 +59,15 @@ public class Environnement {
 
             // s'assurer que la position est unique et non occupée 
             String positionKey = x + "," + y;
-            if (!isPositionOccupied(x,y)) {
+             if (!occupiedPositions.contains(positionKey)|| (!positionsDest.contains(new Position(x,y,0))))  {
                 
                 definirObstacles(x, y);  // Placer l'obstacle
                 occupiedPositions.add(positionKey);
-            } 
             
-        }
-    }
+            
+             }
+            
+    } }
     
     public void definirObstacles(int x, int y){
         if(x>=0 && x<getWeight() && y>=0 && y<getHeight()){
@@ -85,12 +86,7 @@ public class Environnement {
                     return true;
                 }
             }
-            for(Position t : positionsDest){
-                if((int) t.getX() == x && (int) t.getY() == y) {
-                   
-                    return true;
-                }
-            }
+            
             return carte[x][y];
         }
 
@@ -115,4 +111,4 @@ public class Environnement {
     public List<Position> getdestination(){return positionsDest;}
 
 
-}
+ }
